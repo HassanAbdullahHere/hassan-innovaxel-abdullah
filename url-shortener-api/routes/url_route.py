@@ -39,7 +39,6 @@ def get_original_url(short_code):
     if not doc:
         return jsonify({"error": "Short URL not found"}), 404
 
-    # Optionally increment access count
     increment_access(short_code)
 
     return jsonify({

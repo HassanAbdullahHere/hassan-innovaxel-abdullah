@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>URL Shortener API Tester</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>URL Shortener API Interface</h1>
+
+    <label for="action">Select API Action:</label>
+    <select id="action" onchange="toggleFields()">
+      <option value="shorten">Shorten URL</option>
+      <option value="retrieve">Retrieve Original URL</option>
+      <option value="stats">Get URL Stats</option>
+      <option value="update">Update URL</option>
+      <option value="delete">Delete URL</option>
+    </select>
+
+    <div id="inputFields">
+      <input type="text" id="url" placeholder="Enter long URL or shortCode" />
+      <input type="text" id="newUrl" placeholder="Enter new URL (for update)" style="display: none;" />
+    </div>
+
+    <button onclick="handleApi()">Submit</button>
+
+    <div id="result"></div>
+  </div>
+
+  <script>
+    function toggleFields() {
+      const action = document.getElementById("action").value;
+      const newUrlInput = document.getElementById("newUrl");
+
+      if (action === "update") {
+        newUrlInput.style.display = "inline-block";
+      } else {
+        newUrlInput.style.display = "none";
+      }
+
+      document.getElementById("result").innerHTML = "";
+    }
+
+    async function handleApi() {
+      const action = document.getElementById("action").value;
+      const urlInput = document.getElementById("url").value.trim();
+      const newUrl = document.getElementById("newUrl").value.trim();
+      const resultDiv = document.getElementById("result");
+
+      let response, data;
+
+      try {
+        switch (action) {
+          case "shorten":
+            response = await fetch("/shorten", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ url: urlInput })
+            });
+            break;
+
+          case "retrieve":
+            response = await fetch(`/shorten/${urlInput}`);
+            break;
+
+          case "stats":
+            response = await fetch(`/shorten/${urlInput}/stats`);
+            break;
+
+          case "update":
+            response = await fetch(`/shorten/${urlInput}`, {
+              method: "PUT",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ url: newUrl })
+            });
+            break;
+
+          case "delete":
+            response = await fetch(`/shorten/${urlInput}`, {
+              method: "DELETE"
+            });
+            if (response.status === 204) {
+              resultDiv.innerHTML = `<p>✅ URL successfully deleted.</p>`;
+              return;
+            }
+            break;
+        }
+
+        data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || "Something went wrong");
+        }
+
+        resultDiv.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+
+      } catch (err) {
+        resultDiv.innerHTML = `<p style="color:red;">❌ ${err.message}</p>`;
+      }
+    }
+  </script>
+</body>
+</html>
