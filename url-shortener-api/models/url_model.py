@@ -48,3 +48,9 @@ def update_url(short_code, new_url):
         return_document=True
     )
     return result
+
+def delete_url(short_code):
+    collection = get_collection()
+    result = collection.delete_one({"shortCode": short_code})
+    return result.deleted_count > 0
+
