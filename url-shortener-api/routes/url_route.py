@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from utils.shortener import generate_short_code
-from models.url_model import increment_access, insert_url, find_by_short_code
+from models.url_model import increment_access, insert_url, find_by_short_code, update_url
 from datetime import datetime
 
 url_blueprint = Blueprint("url_routes", __name__)
@@ -66,3 +66,23 @@ def get_url_stats(short_code):
         "accessCount": doc.get('accessCount', 0)
     }), 200
 
+@url_blueprint.route('/shorten/<short_code>', methods=['PUT'])
+def update_short_url(short_code):
+    data = request.get_json()
+    new_url = data.get('url')
+
+    if not new_url:
+        return jsonify({"error": "URL is required"}), 400
+
+    updated_doc = update_url(short_code, new_url)
+
+    if not updated_doc:
+        return jsonify({"error": "Short URL not found"}), 404
+
+    return jsonify({
+        "id": str(updated_doc.get('_id')),
+        "url": updated_doc.get('url'),
+        "shortCode": updated_doc.get('shortCode'),
+        "createdAt": updated_doc.get('createdAt'),
+        "updatedAt": updated_doc.get('updatedAt')
+    }), 200

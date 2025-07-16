@@ -35,3 +35,16 @@ def increment_access(short_code):
         }
     )
 
+def update_url(short_code, new_url):
+    updated_at = datetime.utcnow().replace(microsecond=0).isoformat() + "Z"
+    result = get_collection().find_one_and_update(
+        {"shortCode": short_code},
+        {
+            "$set": {
+                "url": new_url,
+                "updatedAt": updated_at
+            }
+        },
+        return_document=True
+    )
+    return result
