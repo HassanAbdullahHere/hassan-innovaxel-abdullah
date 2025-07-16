@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Redirecting...</title>
+</head>
+<body>
+  <h3>Redirecting you to the original URL...</h3>
+
+  <script>
+    const shortCode = "{{ short_code }}";
+
+    fetch(`/shorten/${shortCode}`)
+      .then(res => {
+        if (!res.ok) throw new Error("Not found");
+        return res.json();
+      })
+      .then(data => {
+        window.location.href = data.url;
+      })
+      .catch(() => {
+        document.body.innerHTML = "<h2>Invalid or expired short URL.</h2>";
+      });
+  </script>
+</body>
+</html>

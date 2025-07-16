@@ -6,13 +6,15 @@ app = Flask(__name__, template_folder='templates', static_folder='static')
 
 app.config['MONGO_URI'] = mongo
 
-# Register routes
 app.register_blueprint(url_blueprint)
 
-# Serve index.html at root
 @app.route('/')
 def home():
     return render_template('index.html')
+
+@app.route('/r/<short_code>')
+def redirect_page(short_code):
+    return render_template('redirect.html', short_code=short_code)
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -119,11 +119,16 @@
             }
             if (data.shortCode) {
                 const shortCode = `${data.shortCode}`;
+                const redirectUrl = `${window.location.origin}/r/${shortCode}`;
                 html += `
-                  <p><strong>Short Code:</strong> 
+                <p><strong>Short Code:</strong> 
                     <span>${shortCode}</span>
                     <button onclick="copyToClipboard('${shortCode}')">📋 Copy</button>
-                  </p>
+                </p>
+                <p><strong>Redirect URL:</strong> 
+                    <a href="${redirectUrl}" target="_blank">${redirectUrl}</a>
+                    <button onclick="window.open('${redirectUrl}', '_blank')">🔗 Redirect</button>
+                </p>
                 `;
               }
               
