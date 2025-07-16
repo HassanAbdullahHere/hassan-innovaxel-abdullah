@@ -49,3 +49,20 @@ def get_original_url(short_code):
         "createdAt": doc.get('createdAt'),
         "updatedAt": doc.get('updatedAt')
     }), 200
+    
+@url_blueprint.route('/shorten/<short_code>/stats', methods=['GET'])
+def get_url_stats(short_code):
+    doc = find_by_short_code(short_code)
+
+    if not doc:
+        return jsonify({"error": "Short URL not found"}), 404
+
+    return jsonify({
+        "id": str(doc.get('_id')),
+        "url": doc.get('url'),
+        "shortCode": doc.get('shortCode'),
+        "createdAt": doc.get('createdAt'),
+        "updatedAt": doc.get('updatedAt'),
+        "accessCount": doc.get('accessCount', 0)
+    }), 200
+
