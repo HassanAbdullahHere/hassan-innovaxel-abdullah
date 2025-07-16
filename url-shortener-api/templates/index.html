@@ -21,6 +21,7 @@
     <div id="inputFields">
       <input type="text" id="url" placeholder="Enter long URL or shortCode" />
       <input type="text" id="newUrl" placeholder="Enter new URL (for update)" style="display: none;" />
+      <p id="helperText" class="helper-text">Enter a long URL to shorten it. e.g: https://domain.com/my/very/long</p>    
     </div>
 
     <button onclick="handleApi()">Submit</button>
@@ -30,17 +31,31 @@
 
   <script>
     function toggleFields() {
-      const action = document.getElementById("action").value;
-      const newUrlInput = document.getElementById("newUrl");
-
-      if (action === "update") {
-        newUrlInput.style.display = "inline-block";
-      } else {
-        newUrlInput.style.display = "none";
+        const action = document.getElementById("action").value;
+        const newUrlInput = document.getElementById("newUrl");
+        const helperText = document.getElementById("helperText");
+      
+        // Show or hide the new URL input
+        newUrlInput.style.display = (action === "update") ? "inline-block" : "none";
+      
+        // Set helper message
+        switch (action) {
+          case "shorten":
+            helperText.innerText = "Enter a long URL to shorten it. e.g: https://domain.com/my/very/long";
+            break;
+          case "retrieve":
+          case "stats":
+          case "delete":
+            helperText.innerText = "Enter the short code to perform this action. e.g: abc123";
+            break;
+          case "update":
+            helperText.innerText = "Enter the short code and a new long URL.";
+            break;
+        }
+      
+        document.getElementById("result").innerHTML = "";
       }
-
-      document.getElementById("result").innerHTML = "";
-    }
+      
 
     async function handleApi() {
       const action = document.getElementById("action").value;
