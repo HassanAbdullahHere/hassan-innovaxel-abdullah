@@ -29,5 +29,9 @@ def increment_access(short_code):
     collection = get_collection()
     collection.update_one(
         {"shortCode": short_code},
-        {"$inc": {"accessCount": 1}}
+        {
+            "$inc": {"accessCount": 1},
+            "$set": {"updatedAt": datetime.utcnow().replace(microsecond=0).isoformat() + "Z"}
+        }
     )
+
