@@ -1,7 +1,7 @@
 # hassan-innovaxel-abdullah
 🔗 URL Shortener API + UI – Innovaxel Assignment
 
-This is a complete URL shortening system built for the ASE - Python Specialist role at Innovaxel. It features a RESTful backend using Flask + MongoDB and an interactive single-page frontend built with HTML, CSS, and JavaScript.
+This is a complete URL shortening system built for the ASE role at Innovaxel. It features a RESTful backend using Flask + MongoDB and an interactive single-page frontend built with HTML, CSS, and JavaScript.
 
 ⚙️ Tech Stack
 
