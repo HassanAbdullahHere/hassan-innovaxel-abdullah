@@ -66,22 +66,22 @@ http://localhost:5000
 ## 📸 Demo Screenshots
 
 ### 🧾 1. UI Interface with Dropdown
-![UI Form](screenshots/ui-form.PNG)
+![UI Form](url-shortener-api/screenshots/ui-form.PNG)
 
 ### 🔗 2. Shorten URL Result
-![Shorten Result](screenshots/shorten-result.PNG)
+![Shorten Result](url-shortener-api/screenshots/shorten-result.PNG)
 
 ### 📥 3. Retrieve Original URL
-![Retrieve Result](screenshots/original_url_result.PNG)
+![Retrieve Result](url-shortener-api/screenshots/original_url_result.PNG)
 
 ### 📊 4. Get Stats for Short URL
-![Stats Result](screenshots/get_stats_result.PNG)
+![Stats Result](url-shortener-api/screenshots/get_stats_result.PNG)
 
 ### ✏️ 5. Update Short URL
-![Update Result](screenshots/update_url_result.PNG)
+![Update Result](url-shortener-api/screenshots/update_url_result.PNG)
 
 ### ❌ 6. Delete URL Confirmation
-![Delete Result](screenshots/delete_url_result.PNG)
+![Delete Result](url-shortener-api/screenshots/delete_url_result.PNG)
 
 ### 📂 7. MongoDB Data (Compass View)
-![MongoDB Compass](screenshots/mongodb.PNG)
+![MongoDB Compass](url-shortener-api/screenshots/mongodb.PNG)
