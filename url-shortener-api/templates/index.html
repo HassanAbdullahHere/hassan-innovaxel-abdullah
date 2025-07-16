@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>URL Shortener API Tester</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>URL Shortener API Interface</h1>
+
+    <label for="action">Select API Action:</label>
+    <select id="action" onchange="toggleFields()">
+      <option value="shorten">Shorten URL</option>
+      <option value="retrieve">Retrieve Original URL</option>
+      <option value="stats">Get URL Stats</option>
+      <option value="update">Update URL</option>
+      <option value="delete">Delete URL</option>
+    </select>
+
+    <div id="inputFields">
+      <input type="text" id="url" placeholder="Enter long URL or shortCode" />
+      <input type="text" id="newUrl" placeholder="Enter new URL (for update)" style="display: none;" />
+      <p id="helperText" class="helper-text">Enter a long URL to shorten it. e.g: https://domain.com/my/very/long</p>    
+    </div>
+
+    <button onclick="handleApi()">Submit</button>
+
+    <div id="result"></div>
+  </div>
+
+  <script>
+    function toggleFields() {
+        const action = document.getElementById("action").value;
+        const newUrlInput = document.getElementById("newUrl");
+        const helperText = document.getElementById("helperText");
+      
+        // Reset fields
+        document.getElementById("url").value = "";
+        document.getElementById("newUrl").value = "";
+        document.getElementById("result").innerHTML = "";
+      
+        // Show or hide the new URL input
+        newUrlInput.style.display = (action === "update") ? "inline-block" : "none";
+      
+        // Update helper text
+        switch (action) {
+          case "shorten":
+            helperText.innerText = "Enter a long URL to shorten it. e.g: https://domain.com/my/very/long";
+            break;
+          case "retrieve":
+          case "stats":
+          case "delete":
+            helperText.innerText = "Enter the short code to perform this action. e.g: abc123";
+            break;
+          case "update":
+            helperText.innerText = "Enter the short code and a new long URL.";
+            break;
+        }
+      }
+      
+      
+
+    async function handleApi() {
+      const action = document.getElementById("action").value;
+      const urlInput = document.getElementById("url").value.trim();
+      const newUrl = document.getElementById("newUrl").value.trim();
+      const resultDiv = document.getElementById("result");
+
+      let response, data;
+
+      try {
+        switch (action) {
+          case "shorten":
+            response = await fetch("/shorten", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ url: urlInput })
+            });
+            break;
+
+          case "retrieve":
+            response = await fetch(`/shorten/${urlInput}`);
+            break;
+
+          case "stats":
+            response = await fetch(`/shorten/${urlInput}/stats`);
+            break;
+
+          case "update":
+            response = await fetch(`/shorten/${urlInput}`, {
+              method: "PUT",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ url: newUrl })
+            });
+            break;
+
+          case "delete":
+            response = await fetch(`/shorten/${urlInput}`, {
+              method: "DELETE"
+            });
+            if (response.status === 204) {
+              resultDiv.innerHTML = `<p>✅ URL successfully deleted.</p>`;
+              return;
+            }
+            break;
+        }
+
+        data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || "Something went wrong");
+        }
+
+        let html = `<div class="card">`;
+
+            if (data.url) {
+              html += `<p><strong>Original URL:</strong> <a href="${data.url}" target="_blank">${data.url}</a></p>`;
+            }
+            if (data.shortCode) {
+                const shortCode = `${data.shortCode}`;
+                const redirectUrl = `${window.location.origin}/r/${shortCode}`;
+                html += `
+                <p><strong>Short Code:</strong> 
+                    <span>${shortCode}</span>
+                    <button onclick="copyToClipboard('${shortCode}')">📋 Copy</button>
+                </p>
+                <p><strong>Redirect URL:</strong> 
+                    <a href="${redirectUrl}" target="_blank">${redirectUrl}</a>
+                    <button onclick="window.open('${redirectUrl}', '_blank')">🔗 Redirect</button>
+                </p>
+                `;
+              }
+              
+            if (data.createdAt) {
+              html += `<p><strong>Created At:</strong> ${data.createdAt}</p>`;
+            }
+            if (data.updatedAt) {
+              html += `<p><strong>Updated At:</strong> ${data.updatedAt}</p>`;
+            }
+            if (typeof data.accessCount !== "undefined") {
+              html += `<p><strong>Access Count:</strong> ${data.accessCount}</p>`;
+            }
+            
+            html += `</div>`;
+            resultDiv.innerHTML = html;
+            
+
+      } catch (err) {
+        resultDiv.innerHTML = `<p style="color:red;">❌ ${err.message}</p>`;
+      }
+    }
+    function copyToClipboard(text) {
+        navigator.clipboard.writeText(text).then(() => {
+          alert("Copied to clipboard!");
+        });
+      }
+      
+  </script>
+</body>
+</html>
